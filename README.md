@@ -1,4 +1,5 @@
 # Discord-Record-Bot
+**This is an unfinished bot**  
 Mixer by [Licson](https://github.com/licson0729)  
 Record discord voice channel and upload files(.mp3) to telegram
 
