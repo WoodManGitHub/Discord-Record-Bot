@@ -1,0 +1,28 @@
+{
+    "debug": false,
+    "discord": {
+       "commandPrefix": ">",
+       "config": {
+          "token": ""
+       },
+       "voiceChannels": [{
+          "channelID": "",
+          "record": {
+             "sendTo": {
+                "type": "telegram",
+                "chatID": ""
+             },
+             "ignoreUsers": [
+                 "",
+                 ""
+             ]
+          }
+       }]
+    },
+    "telegram": {
+       "config": {
+          "token": ""
+       }
+    }
+ }
+ 

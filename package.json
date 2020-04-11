@@ -1,0 +1,19 @@
+{
+  "name": "record",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node --expose-gc index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "eris": "^0.11.2",
+    "ffmpeg-static": "^4.1.0",
+    "moment-timezone": "^0.5.28",
+    "node-telegram-bot-api": "^0.40.0"
+  }
+}
