@@ -7,6 +7,9 @@ const AudioUtils = require('../utils/audio')
 module.exports = (discordClient) => {
     const voiceConfig = config.discord.voiceChannels[0]
 
+    global.discord.audio = {};
+    global.discord.audio.connections = {}
+
     console.log(`[Discord Voice] Connecting to voice channel => ${voiceConfig.channelID} .`)
 
     const joinVoiceChannel = () => {
@@ -15,9 +18,10 @@ module.exports = (discordClient) => {
         }).then(connection => {
             console.log(`[Discord Voice] Connected to voice channel => ${voiceConfig.channelID} .`)
 
+            global.discord.audio.connections[voiceConfig.channelID] = connection
             const mixer = new Mixer(16, 2, 48000)
             const streams = connection.receive('pcm')
-            const userMP3Buffer = []
+            const userMP3Buffers = global.discord.userMP3Buffers[voiceConfig.channelID] = {};
             let users = {}
 
             connection.once('disconnect', err => {
@@ -53,6 +57,7 @@ module.exports = (discordClient) => {
                 if (userID == undefined || voiceConfig.record.ignoreUsers.includes(userID)) return
                 if (!users[userID]) {
                     console.log(`[Discord Record] Add user ${userID} to record mixer ${voiceConfig.channelID} .`)
+                    const userMP3Buffer = userMP3Buffers[userID] = []
                     users[userID] = new Stream.PassThrough()
                     mixer.addSource(users[userID])
 
@@ -87,7 +92,6 @@ module.exports = (discordClient) => {
                 })
             }
         })
-
     }
 
     joinVoiceChannel()
