@@ -9,6 +9,13 @@ Record discord voice channel and upload files(.mp3) to telegram
 2. Edit config.json.example and rename it config.json
 3. npm run start
 ```
+Or run in [pm2](https://www.npmjs.com/package/pm2)
+```
+1. npm install pm2 -g
+2. npm install
+3. Edit config.json.example and rename it config.json
+4. pm2 start ecosystem.config.js
+```
 
 ## Problem
 ~~1. There may be a memory leak. (Observing)~~  
