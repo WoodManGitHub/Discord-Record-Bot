@@ -17,25 +17,25 @@ module.exports = (discordClient) => {
             console.log(err)
         }).then(connection => {
             console.log(`[Discord Voice] Connected to voice channel => ${voiceConfig.channelID} .`)
-
-            global.discord.audio.connections[voiceConfig.channelID] = connection
-            const mixer = new Mixer(16, 2, 48000)
-            const streams = connection.receive('pcm')
-            const userMP3Buffers = global.discord.userMP3Buffers[voiceConfig.channelID] = {};
-            let users = {}
+            console.log("[Discord Record] Start record in voice channel => " + channel.channelID + " .")
 
             connection.once('disconnect', err => {
                 console.error(err)
                 users = {}
                 connection.removeAllListeners()
                 streams.removeAllListeners()
-                discordClient.removeAllListeners()
 
                 setTimeout(() => {
                     discordClient.leaveVoiceChannel(voiceConfig.channelID)
                     joinVoiceChannel()
-                }, 5000);
+                }, 5 * 1000);
             })
+
+            global.discord.audio.connections[voiceConfig.channelID] = connection
+            const mixer = new Mixer(16, 2, 48000)
+            const streams = connection.receive('pcm')
+            const userMP3Buffers = global.discord.userMP3Buffers[voiceConfig.channelID] = {};
+            let users = {}
 
             discordClient.on('voiceChannelSwitch', (member, newChannel, oldChannel) => {
                 if (newChannel != voiceConfig.channelID) {
