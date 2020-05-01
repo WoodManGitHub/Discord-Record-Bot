@@ -36,6 +36,7 @@ module.exports = (discordClient) => {
             const streams = connection.receive('pcm')
             const userMP3Buffers = global.discord.userMP3Buffers[voiceConfig.channelID] = {};
             let users = {}
+            let userPCMStream = {}
 
             discordClient.on('voiceChannelSwitch', (member, newChannel, oldChannel) => {
                 if (newChannel != voiceConfig.channelID) {
@@ -57,16 +58,23 @@ module.exports = (discordClient) => {
                 if (userID == undefined || voiceConfig.record.ignoreUsers.includes(userID)) return
                 if (!users[userID]) {
                     console.log(`[Discord Record] Add user ${userID} to record mixer ${voiceConfig.channelID} .`)
-                    const userMP3Buffer = userMP3Buffers[userID] = []
-                    users[userID] = new Stream.PassThrough()
-                    mixer.addSource(users[userID])
 
-                    AudioUtils.generatePCMtoMP3Stream(mixer).on('data', mp3Data => {
+                    const userMP3Buffer = userMP3Buffers[userID] = []
+                    const userMixerSplit = new Mixer(16, 2, 48000)
+
+                    users[userID] = new Stream.PassThrough()
+                    userPCMStream[userID] = new Stream.PassThrough()
+
+                    mixer.addSource(users[userID])
+                    userMixerSplit.addSource(userPCMStream[userID])
+
+                    AudioUtils.generatePCMtoMP3Stream(userMixerSplit).on('data', mp3Data => {
                         userMP3Buffer.push(mp3Data)
                         if (userMP3Buffer.length > 4096) userMP3Buffer.shift(userMP3Buffer.length - 4096)
                     })
                 }
                 users[userID].write(data)
+                userPCMStream[userID].write(data)
             })
 
             if (voiceConfig.record.sendTo.type == 'telegram' && voiceConfig.record.sendTo.chatID) {
