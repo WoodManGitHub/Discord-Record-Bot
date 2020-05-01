@@ -74,6 +74,7 @@ module.exports = (discordClient) => {
 
                 AudioUtils.generatePCMtoMP3Stream(mixer).on('data', data => {
                     mp3File.push(data)
+                    if (mp3File.length > 4096) mp3File.shift(mp3File.length - 4096)
                 })
 
                 const intervalId = setInterval(() => {
